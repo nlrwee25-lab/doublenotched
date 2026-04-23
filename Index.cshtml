@@ -1,0 +1,92 @@
+﻿@page
+@model DoubleNotchedCylinderApp.Pages.IndexModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Futuristic Volume Calculator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI';
+            background: radial-gradient(circle, #0f2027, #203a43, #2c5364);
+            color: white;
+        }
+
+        .panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        input {
+            display: block;
+            margin: 10px 0;
+            padding: 8px;
+            width: 200px;
+        }
+
+        button {
+            padding: 10px;
+            background: cyan;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="panel">
+    <h2>Double Notched Cylinder</h2>
+
+    <form method="post">
+        <input asp-for="Radius" placeholder="Radius" />
+        <input asp-for="Height" placeholder="Height" />
+        <input asp-for="Depth" placeholder="Notch Depth" />
+        <input asp-for="Width" placeholder="Notch Width" />
+
+        <button type="submit">Calculate</button>
+    </form>
+
+    @if (Model.Volume != 0)
+    {
+        <p><strong>Volume:</strong> @Model.Volume.ToString("F2")</p>
+    }
+</div>
+
+<script>
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// Cylinder
+const geometry = new THREE.CylinderGeometry(2, 2, 5, 64);
+const material = new THREE.MeshStandardMaterial({ wireframe: true, color: 0x00ffff });
+const cylinder = new THREE.Mesh(geometry, material);
+scene.add(cylinder);
+
+// Light
+const light = new THREE.PointLight(0xffffff, 1);
+light.position.set(10,10,10);
+scene.add(light);
+
+camera.position.z = 10;
+
+function animate() {
+    requestAnimationFrame(animate);
+    cylinder.rotation.x += 0.01;
+    cylinder.rotation.y += 0.01;
+    renderer.render(scene, camera);
+}
+animate();
+</script>
+
+</body>
+</html>
